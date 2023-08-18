@@ -22,9 +22,13 @@ function MovieForm() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((newMovie) => console.log(newMovie));
+    }).then((response) => {
+      if (response.ok) {
+        response.json().then((newMovie) => console.log(newMovie));
+      } else {
+        response.json().then((errorData) => setErrors(errorData.errors));
+      }
+    });
   }
 
   function handleChange(e) {
@@ -39,6 +43,13 @@ function MovieForm() {
   return (
     <Wrapper>
       <form onSubmit={handleSubmit}>
+      {errors.length > 0 && (
+        <ul style={{ color: "red" }}>
+          {errors.map((error) => (
+          <li key={error}>{error}</li>
+          ))}
+        </ul>
+      )}
         <FormGroup>
           <label htmlFor="title">Title</label>
           <input
